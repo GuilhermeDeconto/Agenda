@@ -28,7 +28,7 @@ public class FormActivity extends AppCompatActivity {
         helper = new FormHelper(this);
         Intent intent = getIntent();
         Aluno aluno = (Aluno) intent.getSerializableExtra("Aluno");
-        if(aluno !=null){
+        if (aluno != null) {
             helper.preencheFormulario(aluno);
         }
 
@@ -48,7 +48,11 @@ public class FormActivity extends AppCompatActivity {
             case R.id.menu_formulario:
                 Aluno aluno = helper.pegaAluno();
                 AlunoDAO dao = new AlunoDAO(this);
-                dao.insere(aluno);
+                if (aluno.getId() != null) {
+                    dao.altera(aluno);
+                }else{
+                    dao.insere(aluno);
+                }
                 dao.close();
                 Toast.makeText(FormActivity.this, "Aluno" + aluno.getNome() + "salvo", Toast.LENGTH_SHORT).show();
                 finish();

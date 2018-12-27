@@ -1,6 +1,8 @@
 package com.example.guilhermedeconto.agenda;
 
 import android.content.Intent;
+import android.net.Uri;
+import android.provider.Browser;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -69,12 +71,32 @@ public class ListStudentsActivity extends AppCompatActivity {
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, final ContextMenu.ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        final Aluno aluno = (Aluno) listView.getItemAtPosition(info.position);
+        String site = aluno.getSite();
+        if(!site.startsWith("http://")){
+            site = "http://" + site;
+        }
+
+        MenuItem visitarSite = menu.add("Visitar site");
+        Intent intentSite = new Intent(Intent.ACTION_VIEW);
+        intentSite.setData(Uri.parse(site));
+        visitarSite.setIntent(intentSite);
+
+
+//        visitarSite.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+//            @Override
+//            public boolean onMenuItemClick(MenuItem item) {
+//
+////                Intent intentSite = new Intent(ListStudentsActivity.this,Browser.class);
+////                startActivity(intentSite);
+//                return false;
+//            }
+//        }
         MenuItem deltar = menu.add("Deletar");
         deltar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
-                AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-                Aluno aluno = (Aluno) listView.getItemAtPosition(info.position);
                 Toast.makeText(ListStudentsActivity.this, "Deletar o aluno " + aluno.getNome(), Toast.LENGTH_SHORT).show();
                 AlunoDAO dao = new AlunoDAO(ListStudentsActivity.this);
                 dao.deleta(aluno);
@@ -84,6 +106,4 @@ public class ListStudentsActivity extends AppCompatActivity {
             }
         });
     }
-
-
 }
