@@ -19,12 +19,12 @@ public class FormHelper {
 
     private Aluno aluno;
 
-    public FormHelper(FormActivity activity){
-        campoNome =  activity.findViewById(R.id.editNome);
-        campoEndereco =  activity.findViewById(R.id.edEndereco);
-        campoTelefone =  activity.findViewById(R.id.editTelefone);
-        campoSite =  activity.findViewById(R.id.edSite);
-        campoNota =  activity.findViewById(R.id.ratingBar);
+    public FormHelper(FormActivity activity) {
+        campoNome = activity.findViewById(R.id.editNome);
+        campoEndereco = activity.findViewById(R.id.edEndereco);
+        campoTelefone = activity.findViewById(R.id.editTelefone);
+        campoSite = activity.findViewById(R.id.edSite);
+        campoNota = activity.findViewById(R.id.ratingBar);
         aluno = new Aluno();
     }
 

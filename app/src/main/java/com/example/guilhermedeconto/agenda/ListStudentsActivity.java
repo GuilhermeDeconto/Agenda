@@ -1,11 +1,13 @@
 package com.example.guilhermedeconto.agenda;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.provider.Browser;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,8 +75,36 @@ public class ListStudentsActivity extends AppCompatActivity {
     public void onCreateContextMenu(ContextMenu menu, View v, final ContextMenu.ContextMenuInfo menuInfo) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
         final Aluno aluno = (Aluno) listView.getItemAtPosition(info.position);
+
+        final MenuItem itemligar = menu.add("Ligar");
+        itemligar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if (ActivityCompat.checkSelfPermission(ListStudentsActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ListStudentsActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 123);
+                } else {
+                    Intent intentligar = new Intent(Intent.ACTION_CALL);
+                    intentligar.setData(Uri.parse("tel:" + aluno.getTelefone()));
+                    startActivity(intentligar);
+                }
+                return false;
+            }
+        });
+
+        MenuItem itemSMS = menu.add("Enviar SMS");
+        Intent intentsms = new Intent(Intent.ACTION_VIEW);
+        intentsms.setData(Uri.parse("sms:" + aluno.getTelefone()));
+        itemSMS.setIntent(intentsms);
+
+        MenuItem itemMapa = menu.add("Visualizar no mapa");
+        Intent intentmapa = new Intent(Intent.ACTION_VIEW);
+        intentmapa.setData(Uri.parse("geo:0,0?q=" + aluno.getEndereco()));
+        itemMapa.setIntent(intentmapa);
+
         String site = aluno.getSite();
-        if(!site.startsWith("http://")){
+        if (!site.startsWith("http://"))
+
+        {
             site = "http://" + site;
         }
 
@@ -84,7 +114,7 @@ public class ListStudentsActivity extends AppCompatActivity {
         visitarSite.setIntent(intentSite);
 
 
-//        visitarSite.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        //        visitarSite.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
 //            @Override
 //            public boolean onMenuItemClick(MenuItem item) {
 //
@@ -94,7 +124,9 @@ public class ListStudentsActivity extends AppCompatActivity {
 //            }
 //        }
         MenuItem deltar = menu.add("Deletar");
-        deltar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+        deltar.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener()
+
+        {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 Toast.makeText(ListStudentsActivity.this, "Deletar o aluno " + aluno.getNome(), Toast.LENGTH_SHORT).show();
@@ -106,4 +138,14 @@ public class ListStudentsActivity extends AppCompatActivity {
             }
         });
     }
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        if(requestCode ==123){
+//            //faz a ligação
+//        }else if (requestCode == 124){
+//            //Abre uma tela
+//        }
+//    }
 }
